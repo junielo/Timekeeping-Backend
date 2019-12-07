@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `hris_db` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `hris_db`;
 -- MySQL dump 10.13  Distrib 8.0.16, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: hris_db
@@ -57,7 +55,7 @@ CREATE TABLE `department_group` (
   `emp_id` int(11) DEFAULT NULL,
   `dept_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +64,7 @@ CREATE TABLE `department_group` (
 
 LOCK TABLES `department_group` WRITE;
 /*!40000 ALTER TABLE `department_group` DISABLE KEYS */;
-INSERT INTO `department_group` VALUES (1,1,1),(2,1,2);
+INSERT INTO `department_group` VALUES (1,1,1),(3,2,1),(4,2,2);
 /*!40000 ALTER TABLE `department_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,7 +118,7 @@ CREATE TABLE `employees` (
   `updated_datetime` datetime DEFAULT NULL,
   `deleted_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,7 +127,7 @@ CREATE TABLE `employees` (
 
 LOCK TABLES `employees` WRITE;
 /*!40000 ALTER TABLE `employees` DISABLE KEYS */;
-INSERT INTO `employees` VALUES (1,'Junielo','Pino','Guardalupe',1,'2019-11-30','1995-06-23','jun.guardalupe@gmail.com','09055591952',2,'2019-11-30 15:18:58',NULL,NULL);
+INSERT INTO `employees` VALUES (1,'Junielo','Pino','Guardalupe',1,'2019-11-30','1995-06-23','jun.guardalupe@gmail.com','09055591952',2,'2019-11-30 15:18:58',NULL,NULL),(2,'Mark Ivan','Wew','De Vera',4,'2019-11-30','1995-06-23','mark.ivan@gmail.com','09123456789',2,'2019-12-04 22:54:55',NULL,NULL);
 /*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,7 +146,7 @@ CREATE TABLE `positions` (
   `updated_datetime` datetime DEFAULT NULL,
   `deleted_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +155,7 @@ CREATE TABLE `positions` (
 
 LOCK TABLES `positions` WRITE;
 /*!40000 ALTER TABLE `positions` DISABLE KEYS */;
-INSERT INTO `positions` VALUES (1,'Android Programmer','Creating android applications for businesses','2019-11-30 15:14:59',NULL,NULL),(2,'Web Programmer','Web programming using angular framework','2019-11-30 15:14:59',NULL,NULL),(3,'Backend Developer','Creating backend processes using nodejs','2019-11-30 15:14:59',NULL,NULL);
+INSERT INTO `positions` VALUES (1,'Android Programmer','Creating android applications for businesses','2019-11-30 15:14:59',NULL,NULL),(2,'Web Programmer','Web programming using angular framework','2019-11-30 15:14:59',NULL,NULL),(3,'Backend Developer','Creating backend processes using nodejs','2019-11-30 15:14:59',NULL,NULL),(4,'Project Manager','Organizing project for the team','2019-12-04 23:34:11',NULL,NULL);
 /*!40000 ALTER TABLE `positions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -170,4 +168,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-12-02  8:37:16
+-- Dump completed on 2019-12-07 11:17:41
