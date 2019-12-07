@@ -23,7 +23,8 @@ var Employee = {
                                         name: arrs.name,
                                         position: arrs.position,
                                         status: arrs.status,
-                                        depts: results
+                                        depts: results,
+                                        date_employed: arrs.date_employed
                                     })
                                 else reject(err)
                             })
