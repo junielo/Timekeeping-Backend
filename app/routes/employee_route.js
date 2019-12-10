@@ -4,5 +4,9 @@ module.exports = function(app){
 
     app.route('/employees')
         .get(employees.getEmpoyees)
+        .put(employees.addEmployee)
+        .post(employees.updateEmployee)
+    app.route('/dropdown')
+        .get(employees.getDropdown)
 
 }
