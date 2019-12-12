@@ -131,7 +131,7 @@ CREATE TABLE `employees` (
 
 LOCK TABLES `employees` WRITE;
 /*!40000 ALTER TABLE `employees` DISABLE KEYS */;
-INSERT INTO `employees` VALUES (1,'Junielo','Pino','Guardalupe',1,'2019-11-30','1995-06-23','jun.guardalupe@gmail.com','09055591952',2,2,2,'2019-11-30 15:18:58',NULL,NULL),(2,'Mark Ivan','Wew','De Vera',4,'2019-11-30','1995-06-23','mark.ivan@gmail.com','09123456789',2,2,2,'2019-12-04 22:54:55',NULL,NULL),(7,'Testing1','Testing1','Testing1',1,'2019-12-03','2019-12-03','fasd@fdasf','123',1,1,1,'2019-12-09 19:40:23',NULL,NULL),(8,'Testing2','Testing2','Testing2',1,'2019-12-02','2019-12-03','fasdf@fasdf','123',1,1,1,'2019-12-09 19:41:59',NULL,NULL),(9,'Test3','Test3','Test3',2,'2019-12-03','2019-12-04','fasdf@asdf','123',1,6,6,'2019-12-10 01:23:15','2019-12-10 07:20:40',NULL);
+INSERT INTO `employees` VALUES (1,'Junielo','Pino','Guardalupe',1,'2019-11-30','1995-06-23','jun.guardalupe@gmail.com','09055591952',2,2,2,'2019-11-30 15:18:58',NULL,NULL),(2,'Ipa','Wew','Tulfo',4,'2019-11-30','1995-06-23','mark.ivan@gmail.com','09123456789',2,2,2,'2019-12-04 22:54:55',NULL,NULL),(7,'Testing1','Testing1','Testing1',1,'2019-12-03','2019-12-03','fasd@fdasf','123',1,1,1,'2019-12-09 19:40:23',NULL,'2019-12-11 22:33:58'),(8,'Testing2','Testing2','Testing2',1,'2019-12-02','2019-12-03','fasdf@fasdf','123',1,1,1,'2019-12-09 19:41:59',NULL,'2019-12-11 22:26:48'),(9,'Test3','Test3','Test3',2,'2019-12-03','2019-12-04','fasdf@asdf','123',1,6,6,'2019-12-10 01:23:15','2019-12-10 07:20:40',NULL);
 /*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -146,9 +146,12 @@ CREATE TABLE `leaves` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `emp_id` int(11) DEFAULT NULL,
   `leave_type` varchar(20) DEFAULT NULL,
+  `reason` text,
+  `sched_date` date DEFAULT NULL,
   `created_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
+  `deleted_datetime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +160,7 @@ CREATE TABLE `leaves` (
 
 LOCK TABLES `leaves` WRITE;
 /*!40000 ALTER TABLE `leaves` DISABLE KEYS */;
-INSERT INTO `leaves` VALUES (1,1,'vacation','2019-12-10 07:52:29'),(2,2,'vacation','2019-12-10 07:52:47');
+INSERT INTO `leaves` VALUES (1,1,'vacation','headache','2019-12-10','2019-12-10 07:52:29',NULL),(2,2,'vacation','toothache','2019-12-10','2019-12-10 07:52:47',NULL),(3,1,'vacation','sick','2018-12-10','2018-12-10 07:52:29',NULL),(4,1,'vacation','out of town','2019-12-10','2019-12-10 07:52:47',NULL),(5,9,'vacation','Reason from sick leave','2019-12-18','2019-12-11 01:06:12','2019-12-11 22:39:05'),(6,9,'vacation','Another Leave','2019-12-18','2019-12-11 01:28:41',NULL),(7,9,'sick','Im sick sorry','2019-12-11','2019-12-11 01:29:02',NULL);
 /*!40000 ALTER TABLE `leaves` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -198,4 +201,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-12-10  8:57:19
+-- Dump completed on 2019-12-12  8:40:44

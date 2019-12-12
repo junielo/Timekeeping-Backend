@@ -26,6 +26,18 @@ let Helper = {
                 }
             })
         })
+    },
+    delete: function(id, table){
+        return new Promise(function(resolve, reject){
+            let sql = "update " + table + " set deleted_datetime=NOW() where id like " + id
+            conn.query(sql, function(err, results){
+                if(!err){
+                    resolve(results)
+                }else{
+                    reject(err)
+                }
+            })
+        })
     }
 
 }

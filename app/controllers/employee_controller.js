@@ -4,13 +4,11 @@ var Helper = require('./sql_helper.js')
 var Employee = {
 
     getEmpoyees: function(req, res){
-        let search = req.query.search != undefined ? " where concat(fname, ' ', lname) like '%" + req.query.search + "%'" : ''
-        let byID = req.query.id != undefined ? " where employees.id like " + req.query.id : ''
+        let search = req.query.search != undefined ? " and concat(fname, ' ', lname) like '%" + req.query.search + "%'" : ''
+        let byID = req.query.id != undefined ? " and employees.id like " + req.query.id : ''
         let sql = "select employees.id, concat(fname, ' ', lname) as name, fname, mname, lname, email, birthdate, number, sick_num, vacation_num, positions.id as pos_id, positions.name as position, employee_status.id as stat_id, employee_status.name as status, date_employed from employees " +
         "join positions on positions.id = position_id " +
-        "join employee_status on employee_status.id = status_id" + search + byID
-
-        console.log(sql)
+        "join employee_status on employee_status.id = status_id where employees.deleted_datetime is null" + search + byID
 
         conn.query(sql, function(err, result){
             if(!err){
@@ -181,6 +179,86 @@ var Employee = {
                         response: "Error deleting department_group"
                     });
                 }
+            })
+        })
+    },
+    deleteEmployee: function(req, res){
+        console.log(req.body)
+        let initHelper = Helper.delete(req.body.id, 'employees')
+        initHelper.then(function(result){
+            res.status(200).json({
+                success: true,
+                response: "Employee successfully deleted"
+            })
+        })
+    },
+    getNumLeaves: function(req, res){
+        let sql = "select " + req.body.type + "_num as num from employees where id like " + req.body.id
+        console.log(sql)
+        conn.query(sql, function(err, result){
+            if(!err){
+                sql = "select count(id) as used from leaves where year(sched_date) like year(now()) and deleted_datetime is null and leave_type like '" + req.body.type + "' and emp_id like " + req.body.id
+                conn.query(sql, function(err, result2){
+                    if(!err){
+                        res.status(200).json({
+                            success: true,
+                            remaining: +result[0].num - +result2[0].used
+                        });
+                    }else{
+                        res.status(200).json({
+                            success: false,
+                            response: "Error fetching leaves"
+                        });
+                    }
+                })
+            }else{
+                res.status(200).json({
+                    success: false,
+                    response: "Error fetching employees"
+                });
+            }
+        })
+    },
+    saveLeaves: function(req, res){
+        let vals = []
+        let sql = "insert into leaves (emp_id, leave_type, reason, sched_date) values ?"
+        for(let data of req.body) vals.push([data.id, data.type, data.reason, data.date])
+        conn.query(sql, [vals], function(err, result){
+            if(!err){
+                res.status(200).json({
+                    success: true,
+                    response: "Leaves successfully added"
+                })
+            }else{
+                res.status(200).json({
+                    success: false,
+                    response: "Error saving leaves"
+                });
+            }
+        })
+    },
+    getLeaves: function(req, res){
+        let sql = "select * from leaves where emp_id like " + req.body.id + " and leave_type like '" + req.body.type + "' and deleted_datetime is null"
+        conn.query(sql, function(err, result){
+            if(!err){
+                res.status(200).json({
+                    success: true,
+                    response: result
+                })
+            }else{
+                res.status(200).json({
+                    success: false,
+                    response: "Error saving leaves"
+                });
+            }
+        })
+    },
+    deleteLeave: function(req, res){
+        let initHelper = Helper.delete(req.body.id, 'leaves')
+        initHelper.then(function(result){
+            res.status(200).json({
+                success: true,
+                response: "Leave successfully deleted"
             })
         })
     }
