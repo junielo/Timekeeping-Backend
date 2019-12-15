@@ -4,12 +4,12 @@ var Helper = require('./sql_helper.js')
 var Employee = {
 
     getEmpoyees: function(req, res){
-        let search = req.query.search != undefined ? " and concat(fname, ' ', lname) like '%" + req.query.search + "%'" : ''
+        let search = req.query.search != undefined ? " and concat(fname, lname) like replace('%" + req.query.search + "%', ' ', '')" : ''
         let byID = req.query.id != undefined ? " and employees.id like " + req.query.id : ''
         let sql = "select employees.id, concat(fname, ' ', lname) as name, fname, mname, lname, email, birthdate, number, sick_num, vacation_num, positions.id as pos_id, positions.name as position, employee_status.id as stat_id, employee_status.name as status, date_employed from employees " +
         "join positions on positions.id = position_id " +
         "join employee_status on employee_status.id = status_id where employees.deleted_datetime is null" + search + byID
-
+        console.log(sql)
         conn.query(sql, function(err, result){
             if(!err){
                 if(result.length != 0){
@@ -260,6 +260,22 @@ var Employee = {
                 success: true,
                 response: "Leave successfully deleted"
             })
+        })
+    },
+    addNumLeave: function(req, res){
+        let sql = "update employees set " + req.body.type + "_num = " + req.body.type + "_num + " + req.body.qty + " where id like " + req.body.id
+        conn.query(sql, function(err, result){
+            if(!err){
+                res.status(200).json({
+                    success: true,
+                    response: result
+                })
+            }else{
+                res.status(200).json({
+                    success: false,
+                    response: "Error editing leaves"
+                });
+            }
         })
     }
 

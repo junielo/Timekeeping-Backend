@@ -17,10 +17,13 @@ module.exports = function(app){
         .put(employees.saveLeaves)
         .post(employees.getLeaves)
 
-    app.route('/deleteEmplyee')
+    app.route('/deleteEmployee')
         .post(employees.deleteEmployee)
 
     app.route('/deleteLeave')
         .post(employees.deleteLeave)
+
+    app.route('/addNumLeave')
+        .post(employees.addNumLeave)
 
 }
