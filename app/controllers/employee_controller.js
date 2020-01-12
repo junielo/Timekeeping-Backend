@@ -3,12 +3,12 @@ var Helper = require('./sql_helper.js')
 
 var Employee = {
 
-    getEmpoyees: function(req, res){
-        let search = req.query.search != undefined ? " and concat(fname, lname) like replace('%" + req.query.search + "%', ' ', '')" : ''
-        let byID = req.query.id != undefined ? " and employees.id like " + req.query.id : ''
+    getEmployees: function(req, res){
+        let search = req.query.search != undefined ? " where concat(fname, lname) like replace('%" + req.query.search + "%', ' ', '')" : ''
+        let byID = req.query.id != undefined ? " where employees.id like " + req.query.id : ''
         let sql = "select employees.id, concat(fname, ' ', lname) as name, fname, mname, lname, email, birthdate, number, sick_num, vacation_num, positions.id as pos_id, positions.name as position, employee_status.id as stat_id, employee_status.name as status, date_employed from employees " +
         "join positions on positions.id = position_id " +
-        "join employee_status on employee_status.id = status_id where employees.deleted_datetime is null" + search + byID
+        "join employee_status on employee_status.id = status_id" + search + byID
         console.log(sql)
         conn.query(sql, function(err, result){
             if(!err){
@@ -197,7 +197,7 @@ var Employee = {
         console.log(sql)
         conn.query(sql, function(err, result){
             if(!err){
-                sql = "select count(id) as used from leaves where year(sched_date) like year(now()) and deleted_datetime is null and leave_type like '" + req.body.type + "' and emp_id like " + req.body.id
+                sql = "select count(id) as used from leaves where year(sched_date) like year(now()) and leave_type like '" + req.body.type + "' and emp_id like " + req.body.id
                 conn.query(sql, function(err, result2){
                     if(!err){
                         res.status(200).json({
@@ -238,7 +238,16 @@ var Employee = {
         })
     },
     getLeaves: function(req, res){
-        let sql = "select * from leaves where emp_id like " + req.body.id + " and leave_type like '" + req.body.type + "' and deleted_datetime is null"
+        let mStat = ""
+        if(req.body.stat === 'pendinng'){
+            mStat = ' and approved_by is null and cancelled_by is null'
+        }else if(req.body.stat === 'approved'){
+            mStat = ' and approved_by is not null'
+        }else if(req.body.stat === 'cancelled'){
+            mStat = ' and cancelled_by is not null'
+        }
+        let sql = "select * from leaves where emp_id like " + req.body.id + " and leave_type like '" + req.body.type + "' and year(sched_date) = '" + req.body.year + "'" + mStat
+        console.log(sql)
         conn.query(sql, function(err, result){
             if(!err){
                 res.status(200).json({
@@ -264,6 +273,24 @@ var Employee = {
     },
     addNumLeave: function(req, res){
         let sql = "update employees set " + req.body.type + "_num = " + req.body.type + "_num + " + req.body.qty + " where id like " + req.body.id
+        conn.query(sql, function(err, result){
+            if(!err){
+                res.status(200).json({
+                    success: true,
+                    response: result
+                })
+            }else{
+                res.status(200).json({
+                    success: false,
+                    response: "Error editing leaves"
+                });
+            }
+        })
+    },
+    getYearSummary: function(req, res){
+        let id = req.body.id
+        let type = req.body.type
+        let sql = "select year(sched_date) as years from leaves where emp_id like " + id + " and leave_type like '" + type + "' group by year(sched_date) order by year(sched_date) desc"
         conn.query(sql, function(err, result){
             if(!err){
                 res.status(200).json({

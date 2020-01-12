@@ -3,7 +3,7 @@ module.exports = function(app){
     var employees = require('../controllers/employee_controller.js')
 
     app.route('/employees')
-        .get(employees.getEmpoyees)
+        .get(employees.getEmployees)
         .put(employees.addEmployee)
         .post(employees.updateEmployee)
 
@@ -25,5 +25,8 @@ module.exports = function(app){
 
     app.route('/addNumLeave')
         .post(employees.addNumLeave)
+
+    app.route('/getLeavesByYear')
+        .post(employees.getYearSummary)
 
 }
