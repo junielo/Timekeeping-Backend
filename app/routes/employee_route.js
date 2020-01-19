@@ -17,6 +17,9 @@ module.exports = function(app){
         .put(employees.saveLeaves)
         .post(employees.getLeaves)
 
+    app.route('/setleave')
+        .post(employees.setLeaves)
+
     app.route('/deleteEmployee')
         .post(employees.deleteEmployee)
 

@@ -238,15 +238,21 @@ var Employee = {
         })
     },
     getLeaves: function(req, res){
+        let byID = req.body.id != undefined ? ' leaves.emp_id like ' + req.body.id + ' ' + (req.body.type != undefined || req.body.year != undefined || req.body.stat != undefined ? 'and' : '') : ''
+        let byleave = req.body.type != undefined ? " leaves.leave_type like '" + req.body.type + "' " + (req.body.year != undefined || req.body.stat != undefined ? 'and' : '') : ''
+        let byYear = req.body.year != undefined ? " year(leaves.sched_date) = '" + req.body.year + "' " + (req.body.stat != 'all' ? 'and' : '') : ''
         let mStat = ""
-        if(req.body.stat === 'pendinng'){
-            mStat = ' and approved_by is null and cancelled_by is null'
+        let pending = ' leaves.approved_by is null and leaves.cancelled_by is null and date(leaves.sched_date) > date(now())'
+        let approved = ' leaves.approved_by is not null'
+        let cancelled = ' leaves.cancelled_by is null and date(leaves.sched_date) < date(now())'
+        if(req.body.stat === 'pending'){
+            mStat = pending
         }else if(req.body.stat === 'approved'){
-            mStat = ' and approved_by is not null'
+            mStat = approved
         }else if(req.body.stat === 'cancelled'){
-            mStat = ' and cancelled_by is not null'
+            mStat = cancelled
         }
-        let sql = "select * from leaves where emp_id like " + req.body.id + " and leave_type like '" + req.body.type + "' and year(sched_date) = '" + req.body.year + "'" + mStat
+        let sql = "select leaves.*, if(" + pending + ", 'pending', if(" + approved + ", 'approved', if(" + cancelled + ", 'cancelled', 'unknown'))) as stats, concat(employees.fname, ' ', employees.lname) as name from leaves join employees on leaves.emp_id = employees.id where" + byID + byleave + byYear + mStat
         console.log(sql)
         conn.query(sql, function(err, result){
             if(!err){
@@ -260,6 +266,34 @@ var Employee = {
                     response: "Error saving leaves"
                 });
             }
+        })
+    },
+    setLeaves: function(req, res){
+        let action_by = req.body.action === 'approve' ? 'approved_by' : 'cancelled_by'
+        let action_date = req.body.action === 'approve' ? 'approved_date' : 'cancelled_date'
+        let arrQuery = []
+        for(let leaveID of req.body.leaveIDs){
+            arrQuery.push(new Promise(function(resolve, reject){
+                let sql = "update leaves set " + action_by + " = " + req.body.id + ", " + action_date + " = now() where id like " + leaveID
+                conn.query(sql, function(err, result){
+                    if(!err){
+                        resolve(result)
+                    }else{
+                        reject(err)
+                    }
+                })
+            }))
+        }
+        Promise.all(arrQuery).then(function(result){
+            res.status(200).json({
+                success: true,
+                response: 'Leave successfully updated'
+            });
+        }, function(err){
+            res.status(400).json({
+                success: false,
+                response: err
+            });
         })
     },
     deleteLeave: function(req, res){
